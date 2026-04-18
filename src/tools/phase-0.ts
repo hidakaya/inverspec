@@ -1,5 +1,6 @@
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
+
 import { loadPromptTemplate } from '../prompts/load-prompt.js';
 
 export function registerPhase0Tool(server: McpServer): void {
@@ -8,18 +9,20 @@ export function registerPhase0Tool(server: McpServer): void {
     {
       description:
         'Returns the Phase 0 prompt template for source file inventory and scope definition. ' +
-        'Run this first before any other phase.',
+        'Always run this first before any other phase.',
       inputSchema: {
-        projectPath: z.string().describe(
-          'Absolute path to the root directory of the project to analyse.'
-        ),
+        projectPath: z
+          .string()
+          .describe('Absolute path to the root directory of the project to analyse.'),
       },
     },
     async ({ projectPath }) => ({
-      content: [{
-        type: 'text',
-        text: `# Target project\n\`${projectPath}\`\n\n${loadPromptTemplate(0)}`,
-      }],
+      content: [
+        {
+          type: 'text',
+          text: `**Target project:** \`${projectPath}\`\n\n${loadPromptTemplate(0)}`,
+        },
+      ],
     }),
   );
 }

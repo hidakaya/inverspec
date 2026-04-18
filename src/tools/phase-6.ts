@@ -8,18 +8,21 @@ export function registerPhase6Tool(server: McpServer): void {
     'inverspec_phase_6_integration',
     {
       description:
-        'Returns the Phase 6 prompt template for merging Phase 0–5 outputs into a final specification.',
+        'Returns the Phase 6 prompt template for merging Phase 0–5 outputs into a final specification. ' +
+        'Run after all previous phases are complete.',
       inputSchema: {
-        projectPath: z.string().describe(
-          'Absolute path to the root directory of the project to analyse.',
-        ),
+        projectPath: z
+          .string()
+          .describe('Absolute path to the root directory of the project to analyse.'),
       },
     },
     async ({ projectPath }) => ({
-      content: [{
-        type: 'text',
-        text: `# Target project\n\`${projectPath}\`\n\n${loadPromptTemplate(6)}`,
-      }],
+      content: [
+        {
+          type: 'text',
+          text: `**Target project:** \`${projectPath}\`\n\n${loadPromptTemplate(6)}`,
+        },
+      ],
     }),
   );
 }

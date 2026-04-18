@@ -8,18 +8,21 @@ export function registerPhase4Tool(server: McpServer): void {
     'inverspec_phase_4_business_logic',
     {
       description:
-        'Returns the Phase 4 prompt template for domain rules, services, workflows, and background jobs.',
+        'Returns the Phase 4 prompt template for domain rules, services, workflows, and background jobs. ' +
+        'Run after Phase 3 feature specifications are complete.',
       inputSchema: {
-        projectPath: z.string().describe(
-          'Absolute path to the root directory of the project to analyse.',
-        ),
+        projectPath: z
+          .string()
+          .describe('Absolute path to the root directory of the project to analyse.'),
       },
     },
     async ({ projectPath }) => ({
-      content: [{
-        type: 'text',
-        text: `# Target project\n\`${projectPath}\`\n\n${loadPromptTemplate(4)}`,
-      }],
+      content: [
+        {
+          type: 'text',
+          text: `**Target project:** \`${projectPath}\`\n\n${loadPromptTemplate(4)}`,
+        },
+      ],
     }),
   );
 }

@@ -8,18 +8,21 @@ export function registerPhase5Tool(server: McpServer): void {
     'inverspec_phase_5_operations',
     {
       description:
-        'Returns the Phase 5 prompt template for configuration, deployment, and operational concerns.',
+        'Returns the Phase 5 prompt template for configuration, deployment, and operational concerns. ' +
+        'Run after Phase 4 business logic is complete.',
       inputSchema: {
-        projectPath: z.string().describe(
-          'Absolute path to the root directory of the project to analyse.',
-        ),
+        projectPath: z
+          .string()
+          .describe('Absolute path to the root directory of the project to analyse.'),
       },
     },
     async ({ projectPath }) => ({
-      content: [{
-        type: 'text',
-        text: `# Target project\n\`${projectPath}\`\n\n${loadPromptTemplate(5)}`,
-      }],
+      content: [
+        {
+          type: 'text',
+          text: `**Target project:** \`${projectPath}\`\n\n${loadPromptTemplate(5)}`,
+        },
+      ],
     }),
   );
 }
