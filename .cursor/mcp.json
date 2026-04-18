@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "inverspec": {
+      "command": "node",
+      "args": ["/Users/hidakaya/Development/Inverspec/mcp-server-inverspec/dist/index.js"],
+      "cwd": "${workspaceFolder}"
+    }
+  }
+}

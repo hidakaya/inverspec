@@ -1,0 +1,327 @@
+# .cursorrules — MCP Server Development Rules
+# ================================================================
+# This file defines the rules for AI assistants (Cursor, Claude, etc.)
+# working in this MCP server project.
+# ================================================================
+
+
+# ================================================================
+# § 0  LANGUAGE POLICY  ★ HIGHEST PRIORITY — NEVER OVERRIDE ★
+# ================================================================
+#
+# [EN] ALL artifacts produced in this repository MUST be written in English.
+#      This includes, without exception:
+#        • Source code (all files)
+#        • Identifiers: variable names, function names, class names, constants
+#        • Inline comments and block comments
+#        • JSDoc / docstring content
+#        • Log messages and error strings
+#        • MCP tool names, descriptions, and JSON Schema fields
+#        • Configuration files (keys and string values)
+#        • Documentation: README, CHANGELOG, ADRs, wiki pages
+#        • Git commit messages, branch names, PR/issue titles and bodies
+#        • Test descriptions (describe / it / test labels)
+#
+# [EN] The ONLY exceptions are:
+#        1. This .cursorrules file itself — bilingual to help the developer.
+#        2. Test fixtures that intentionally contain non-English source code
+#           as sample input data (stored under tests/fixtures/).
+#        3. Runtime user input passed through by end-users at call time.
+#
+# ----------------------------------------------------------------
+# [JA — 開発者向け補足]
+# このリポジトリで生成・編集するすべての成果物は英語で書くこと。
+# 対象: ソースコード・識別子・コメント・JSDoc・ログ文字列・
+#        MCP ツール定義・設定ファイル・ドキュメント・
+#        コミットメッセージ・ブランチ名・PR/Issue。
+# 例外は上記 1〜3 のみ。
+# 日本語で書きたいメモは、このファイル末尾の § 9 に書くこと。
+# ----------------------------------------------------------------
+
+
+# ================================================================
+# § 1  PROJECT OVERVIEW
+# ================================================================
+#
+# This repository implements an MCP (Model Context Protocol) server.
+# MCP servers expose tools, resources, and prompts that AI assistants
+# can call at runtime.
+#
+# Key principles:
+#   • Tools must be globally understandable — English-only interfaces.
+#   • Security-first: never expose credentials or PII through tool output.
+#   • Deterministic outputs: same input → same structured output.
+#   • Confirmation gates for any irreversible or destructive operation.
+
+
+# ================================================================
+# § 2  RECOMMENDED REPOSITORY STRUCTURE
+# ================================================================
+#
+# <project-name>/
+# ├── src/
+# │   ├── server.ts            # MCP server entry point
+# │   ├── tools/               # One file per tool (or tool group)
+# │   ├── resources/           # MCP resource handlers (if any)
+# │   ├── prompts/             # Prompt templates (English Markdown)
+# │   └── utils/               # Shared helpers (validation, redaction …)
+# ├── tests/
+# │   ├── unit/
+# │   ├── integration/
+# │   └── fixtures/            # Sample data (non-English content allowed)
+# ├── docs/
+# │   ├── README.md
+# │   ├── ARCHITECTURE.md
+# │   └── adr/                 # Architecture Decision Records
+# ├── .cursorrules             # This file
+# ├── package.json
+# └── tsconfig.json
+
+
+# ================================================================
+# § 3  CODING CONVENTIONS
+# ================================================================
+
+## 3.1  Language & runtime
+# - TypeScript with strict mode (strict: true in tsconfig.json).
+# - Target: Node.js LTS. Avoid browser-specific APIs.
+# - ESM modules (import/export); no CommonJS require().
+
+## 3.2  Type safety
+# - Explicit return types on ALL exported functions and methods.
+# - No `any`. Use `unknown` and narrow with type guards.
+# - Prefer `interface` for object shapes; `type` for unions/aliases.
+# - Use `readonly` wherever mutation is not required.
+# - Validate all external input with a schema library (e.g., Zod).
+
+## 3.3  Naming conventions
+# +-----------------+--------------------------+--------------------------+
+# | Target          | Convention               | Example                  |
+# +-----------------+--------------------------+--------------------------+
+# | Files           | kebab-case               | schema-parser.ts         |
+# | Classes         | PascalCase               | SchemaParser             |
+# | Functions       | camelCase                | extractTableList()       |
+# | Constants       | SCREAMING_SNAKE_CASE     | MAX_RETRY_COUNT          |
+# | MCP tool names  | snake_case               | my_tool_name             |
+# | JSON properties | camelCase                | { "inputSchema": ... }   |
+# +-----------------+--------------------------+--------------------------+
+
+## 3.4  Comments & documentation
+# - All comments in English — no exceptions.
+# - JSDoc on every exported symbol: @param, @returns, @throws.
+# - Inline comments explain WHY, not WHAT.
+# - TODO / FIXME / HACK must include a GitHub issue number:
+#     // TODO(#42): replace with proper parser
+
+## 3.5  Error handling
+# - Never silently swallow errors.
+# - Wrap every tool handler in try/catch.
+# - Return structured MCP errors on failure:
+#     { isError: true, content: [{ type: "text", text: "<actionable message>" }] }
+# - Error messages must be actionable:
+#     OK  : "File not found at path '/foo/bar'. Check that the path exists."
+#     BAD : "File error."
+# - Log at `error` level with enough context (tool name, input summary).
+
+## 3.6  Formatting
+# - Prettier with default settings (printWidth: 100, singleQuote: true).
+# - ESLint with recommended + @typescript-eslint/recommended rules.
+# - No trailing whitespace. Newline at end of file.
+# - Run `lint` and `type-check` before every commit (enforced by CI).
+
+
+# ================================================================
+# § 4  MCP TOOL DESIGN RULES
+# ================================================================
+
+## 4.1  Required fields for every tool
+# +---------------+------------------------------------------------------+
+# | Field         | Requirement                                          |
+# +---------------+------------------------------------------------------+
+# | name          | snake_case, globally unique within the server        |
+# | description   | 2-4 sentences in plain English; explain purpose,     |
+# |               | required inputs, and what is returned                |
+# | inputSchema   | JSON Schema draft-07; mark required vs optional      |
+# | handler       | TypeScript function; typed input & output            |
+# +---------------+------------------------------------------------------+
+
+## 4.2  Confirmation gates
+# Any tool that is irreversible or potentially destructive MUST:
+#   1. Return a summary and ask "Confirm? (yes/no)" on first call.
+#   2. Accept { confirmed: true } in a subsequent call to proceed.
+#   3. Validate the flag server-side before executing.
+
+## 4.3  Output format
+# - Return structured Markdown in English.
+# - Use [UNKNOWN] for values that cannot be determined — never guess.
+# - Annotate redacted content with [REDACTED].
+# - Flag issues inline:
+#     🔴 Security concern  |  🟡 Needs review  |  🟢 Low priority
+
+## 4.4  Idempotency
+# - Read-only tools must be fully idempotent.
+# - Write tools must document whether they are idempotent.
+
+
+# ================================================================
+# § 5  SECURITY — CRITICAL
+# ================================================================
+#
+# These rules are non-negotiable and must be applied at every layer.
+
+## 5.1  Credential & secret protection
+# - NEVER log, store, echo, or return credential values
+#   (passwords, API keys, tokens, private keys, connection strings).
+# - Redact secrets in file content before passing to LLM or tool output:
+#     Pattern: /(?<=[=:]\s*['"])[^'"]{4,}/g  =>  "***REDACTED***"
+# - Run hardcoded-secret detection before reading files:
+#     grep -rn "password\s*=\s*['\"][^'\"]" .
+#     grep -rn "api_key\s*=\s*['\"][^'\"]" .
+#     grep -rn "secret\s*=\s*['\"][^'\"]" .
+
+## 5.2  PII protection
+# - Never include real personal data (names, emails, addresses, IDs)
+#   in logs, error messages, or tool output.
+# - Anonymize or mask before processing.
+
+## 5.3  Path traversal prevention
+# - Validate ALL file paths against an allowedRoots whitelist.
+# - Reject paths containing ".." or absolute paths outside allowed roots.
+# - Enforce this check before any filesystem operation.
+
+## 5.4  Input validation
+# - Validate every tool input against its JSON Schema using Zod (or
+#   equivalent) at the handler boundary.
+# - Reject unexpected fields (strict mode).
+# - Sanitize strings before use in shell commands or SQL queries.
+
+## 5.5  Documentation
+# - Record every significant security decision in docs/adr/.
+
+
+# ================================================================
+# § 6  PROMPT TEMPLATES (src/prompts/)
+# ================================================================
+#
+# - All templates are English Markdown files.
+# - Each template must include a version header:
+#     <!-- prompt-version: 1.0.0 | tool: <name> | updated: YYYY-MM-DD -->
+# - Templates must instruct the LLM to:
+#     • Never reproduce credential values.
+#     • Tag unknowns with [UNKNOWN] instead of guessing.
+#     • Flag security issues with 🔴.
+#     • Request confirmation before irreversible actions.
+# - Keep prompts deterministic: prefer explicit output schemas over
+#   open-ended instructions.
+
+
+# ================================================================
+# § 7  TESTING STRATEGY
+# ================================================================
+#
+# - Unit tests      : pure functions, parsers, validators, redaction logic.
+# - Integration     : each tool handler with realistic fixture data.
+# - Fixtures        : minimal real-world samples per use case.
+#                     Non-English content in fixtures is allowed.
+# - Coverage        : >= 80% line coverage enforced on CI.
+# - Test file names : *.test.ts co-located with source;
+#                     integration tests under tests/integration/.
+# - Test labels     : English only (describe / it strings).
+# - CI must pass    : lint + type-check + unit + integration.
+
+
+# ================================================================
+# § 8  GIT & COLLABORATION + AI ASSISTANT BEHAVIOR
+# ================================================================
+
+## 8.1  Commit messages — Conventional Commits (English only)
+#
+#   <type>(<scope>): <short summary in imperative mood>
+#
+#   Types : feat | fix | docs | test | refactor | chore | security
+#
+#   Examples:
+#     feat(tools): add file-inventory tool
+#     fix(security): prevent path traversal in file reader
+#     docs(adr): record decision on secret redaction strategy
+
+## 8.2  Branch names (kebab-case, type-prefixed)
+#   feat/file-inventory-tool
+#   fix/path-traversal-validation
+#   docs/update-readme
+
+## 8.3  Pull Requests
+#   • Title: same format as commit messages (English).
+#   • Description: English; link related issues; include test evidence.
+#   • Do NOT merge without passing CI.
+#   • At least one reviewer approval required.
+
+## 8.4  AI assistant rules
+#
+# When an AI assistant (Cursor, Claude, Copilot, etc.) generates or
+# edits code in this repository:
+#
+# ALWAYS ✅
+#   • Write all code, comments, identifiers, and strings in English.
+#   • Add JSDoc to every exported function and class.
+#   • Validate tool inputs against the declared JSON Schema.
+#   • Apply secret redaction before any file content leaves the server.
+#   • Validate file paths against allowedRoots before fs operations.
+#   • Return structured MCP errors ({ isError: true, ... }) on failure.
+#   • Write a corresponding test for every new tool or utility.
+#   • Use [UNKNOWN] for values that cannot be determined.
+#   • Add a confirmation gate for any irreversible operation.
+#
+# NEVER ❌
+#   • Write comments, identifiers, or string literals in Japanese.
+#     (§ 9 developer notes are the ONLY exception.)
+#   • Use the `any` type in TypeScript.
+#   • Log or return raw credential or PII values.
+#   • Suppress or swallow errors without logging.
+#   • Fabricate or guess unknown values — use [UNKNOWN].
+#   • Perform filesystem operations without path validation.
+#   • Merge code that fails lint, type-check, or tests.
+
+
+# ================================================================
+# § 9  DEVELOPER NOTES  [このセクションのみ日本語可]
+# ================================================================
+# このセクションはコードに含まれません。
+# 開発中の気づき・疑問・TODO を日本語で自由に書いてください。
+# コードに反映したら削除すること。
+#
+# ――――――――――――――――――――――――――――――――――――
+# 【このファイルの構成】
+# § 0  言語ポリシー  ← 最重要。英語ルールの根拠と例外
+# § 1  プロジェクト概要
+# § 2  ディレクトリ構成の推奨例
+# § 3  コーディング規約（TypeScript・命名・エラー処理）
+# § 4  MCP ツール設計ルール（必須フィールド・確認ゲート・出力形式）
+# § 5  セキュリティルール（機密情報・PII・パストラバーサル対策）
+# § 6  プロンプトテンプレートの管理方法
+# § 7  テスト戦略（カバレッジ・CI 要件）
+# § 8  Git 規約 + AI アシスタントへの行動指示
+# § 9  ← 今ここ。メモ欄（日本語 OK）
+#
+# ――――――――――――――――――――――――――――――――――――
+# 【よくある質問】
+#
+# Q: コメントも英語で書かないといけないの？
+# A: はい。// から始まる行も含めてすべて英語です。
+#    日本語でメモしたい場合はこの § 9 に書いてください。
+#
+# Q: コミットメッセージも英語？
+# A: はい。"feat(tools): add schema parser" のように書いてください。
+#    § 8.1 に例があります。
+#
+# Q: エラーメッセージも英語？
+# A: はい。コード内のエラー文字列は英語で書いてください。
+#    UI 側のローカライズはアプリ層の責務です。
+#
+# Q: MCP ツールの description も英語？
+# A: はい。グローバル展開のため、LLM が世界中で読むことを前提に
+#    English-only で記述してください。
+#
+# ――――――――――――――――――――――――――――――――――――
+# 【作業メモ欄】
+# ここに開発中のメモを自由に書いてください。
