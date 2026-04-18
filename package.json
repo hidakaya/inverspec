@@ -1,29 +1,46 @@
 {
   "name": "mcp-server-inverspec",
   "version": "1.0.0",
-  "description": "MCP server that exposes Inverspec / spec-writer phase prompt templates as tools.",
+  "description": "MCP server that reverse-engineers technical specifications from source code in seven phases (Inverspec workflow).",
   "type": "module",
   "main": "./dist/index.js",
+  "bin": {
+    "mcp-server-inverspec": "./dist/index.js"
+  },
+  "files": [
+    "dist/**/*",
+    "README.md"
+  ],
   "scripts": {
     "build": "tsc && cp src/prompts/*.md dist/prompts/",
     "start": "node ./dist/index.js",
     "dev": "tsc && cp src/prompts/*.md dist/prompts/ && node ./dist/index.js",
+    "prepublishOnly": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "keywords": [
+    "mcp",
+    "mcp-server",
+    "reverse-engineering",
+    "specification",
+    "claude",
+    "ai"
+  ],
+  "author": "hidakaya",
+  "license": "ISC",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/hidakaya/inverspec.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "bugs": {
     "url": "https://github.com/hidakaya/inverspec/issues"
   },
   "homepage": "https://github.com/hidakaya/inverspec#readme",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.29.0",
-    "zod": "^4.3.6"
+    "@modelcontextprotocol/sdk": "^1.29.0"
   },
   "devDependencies": {
     "@types/node": "^25.6.0",
