@@ -108,7 +108,7 @@ docs/spec/
 
 ```bash
 git clone https://github.com/hidakaya/inverspec.git
-cd mcp-server-inverspec
+cd inverspec
 npm install
 npm run build
 ```
