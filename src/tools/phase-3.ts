@@ -1,4 +1,5 @@
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { z } from 'zod';
 
 import { loadPromptTemplate } from '../prompts/load-prompt.js';
 
@@ -8,10 +9,17 @@ export function registerPhase3Tool(server: McpServer): void {
     {
       description:
         'Returns the Phase 3 prompt template for routes, screens, APIs, and user-visible behavior.',
-      inputSchema: {},
+      inputSchema: {
+        projectPath: z.string().describe(
+          'Absolute path to the root directory of the project to analyse.',
+        ),
+      },
     },
-    async () => ({
-      content: [{ type: 'text', text: loadPromptTemplate(3) }],
+    async ({ projectPath }) => ({
+      content: [{
+        type: 'text',
+        text: `# Target project\n\`${projectPath}\`\n\n${loadPromptTemplate(3)}`,
+      }],
     }),
   );
 }

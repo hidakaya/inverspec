@@ -1,4 +1,5 @@
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { z } from 'zod';
 
 import { loadPromptTemplate } from '../prompts/load-prompt.js';
 
@@ -7,10 +8,17 @@ export function registerPhase2Tool(server: McpServer): void {
     'inverspec_phase_2_data_model',
     {
       description: 'Returns the Phase 2 prompt template for data models, persistence, and validation.',
-      inputSchema: {},
+      inputSchema: {
+        projectPath: z.string().describe(
+          'Absolute path to the root directory of the project to analyse.',
+        ),
+      },
     },
-    async () => ({
-      content: [{ type: 'text', text: loadPromptTemplate(2) }],
+    async ({ projectPath }) => ({
+      content: [{
+        type: 'text',
+        text: `# Target project\n\`${projectPath}\`\n\n${loadPromptTemplate(2)}`,
+      }],
     }),
   );
 }
