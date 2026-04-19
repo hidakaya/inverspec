@@ -1,3 +1,5 @@
+import { requirePro } from '../license.js';
+import { getLicenseKey } from '../config.js';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 
@@ -16,13 +18,16 @@ export function registerPhase6Tool(server: McpServer): void {
           .describe('Absolute path to the root directory of the project to analyse.'),
       },
     },
-    async ({ projectPath }) => ({
+    async ({ projectPath }) => {
+      await requirePro(getLicenseKey());
+      return ({
       content: [
         {
           type: 'text',
           text: `**Target project:** \`${projectPath}\`\n\n${loadPromptTemplate(6)}`,
         },
       ],
-    }),
+    });
+    },
   );
 }
