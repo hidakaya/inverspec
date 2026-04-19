@@ -137,6 +137,15 @@ docs/spec/
 
 ---
 
+## Feedback & Support
+
+Found a bug or have a feature request? → [Open an Issue](https://github.com/hidakaya/inverspec/issues)
+
+Have a question or idea to discuss? → [Start a Discussion](https://github.com/hidakaya/inverspec/discussions)
+
+---
+
+
 ## License
 
 ISC
