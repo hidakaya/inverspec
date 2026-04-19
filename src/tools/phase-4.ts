@@ -11,6 +11,8 @@ export function registerPhase4Tool(server: McpServer): void {
     {
       description:
         'Returns the Phase 4 prompt template for domain rules, services, workflows, and background jobs. ' +
+        'Instructs reading one implementation file at a time, limiting quoted source code to at most 3 consecutive lines, ' +
+        'and flagging comment-vs-code mismatches with `Review needed: comment vs implementation mismatch`. ' +
         'Run after Phase 3 feature specifications are complete.',
       inputSchema: {
         projectPath: z
