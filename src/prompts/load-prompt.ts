@@ -16,10 +16,14 @@ const PHASE_FILES = {
 export type SpecPhase = keyof typeof PHASE_FILES;
 
 const IRON_RULES_FILE = 'iron-rules.md';
+const FRAMEWORK_GUIDE_FILE = 'framework-guide.md';
 
 const promptsDir = dirname(fileURLToPath(import.meta.url));
 
+const PHASES_WITH_FRAMEWORK_GUIDE = [1, 4] as const satisfies readonly SpecPhase[];
+
 let ironRulesCache: string | undefined;
+let frameworkGuideCache: string | undefined;
 
 export function loadIronRules(): string {
   if (ironRulesCache !== undefined) {
@@ -32,6 +36,27 @@ export function loadIronRules(): string {
     throw new Error(`Failed to load ${IRON_RULES_FILE} from ${promptsDir}: ${String(e)}`);
   }
   return ironRulesCache;
+}
+
+function shouldIncludeFrameworkGuide(phase: SpecPhase): boolean {
+  return (PHASES_WITH_FRAMEWORK_GUIDE as readonly SpecPhase[]).includes(phase);
+}
+
+/**
+ * Framework-specific reading guide (full Markdown). Cached after first read.
+ * On missing file or read failure, throws the same shape of Error as loadIronRules (promptsDir in message).
+ */
+export function loadFrameworkGuide(): string {
+  if (frameworkGuideCache !== undefined) {
+    return frameworkGuideCache;
+  }
+  const guidePath = join(promptsDir, FRAMEWORK_GUIDE_FILE);
+  try {
+    frameworkGuideCache = readFileSync(guidePath, 'utf8');
+  } catch (e) {
+    throw new Error(`Failed to load ${FRAMEWORK_GUIDE_FILE} from ${promptsDir}: ${String(e)}`);
+  }
+  return frameworkGuideCache;
 }
 
 function readPhaseMarkdown(relativeName: string): string {
@@ -50,5 +75,10 @@ export function loadPromptTemplate(phase: SpecPhase): string {
   }
   const relativeName = PHASE_FILES[phase];
   const body = readPhaseMarkdown(relativeName);
-  return `${loadIronRules()}\n\n---\n\n${body}`;
+  const iron = loadIronRules();
+  if (!shouldIncludeFrameworkGuide(phase)) {
+    return `${iron}\n\n---\n\n${body}`;
+  }
+  const guide = loadFrameworkGuide();
+  return `${iron}\n\n---\n\n${guide}\n\n---\n\n${body}`;
 }
