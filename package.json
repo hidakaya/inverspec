@@ -1,7 +1,7 @@
 {
   "name": "mcp-server-inverspec",
   "version": "1.0.2",
-  "description": "MCP server that reverse-engineers technical specifications from source code in seven phases (Inverspec workflow).",
+  "description": "MCP server that reverse-engineers technical specifications from source code in eight phases (Inverspec workflow).",
   "type": "module",
   "main": "./dist/index.js",
   "bin": {

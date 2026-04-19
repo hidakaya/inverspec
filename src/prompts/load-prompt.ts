@@ -2,11 +2,7 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const PHASE_COUNT = 7 as const;
-
-export type SpecPhase = 0 | 1 | 2 | 3 | 4 | 5 | 6;
-
-const PHASE_FILES: Record<SpecPhase, string> = {
+const PHASE_FILES = {
   0: 'phase-0-inventory.md',
   1: 'phase-1-architecture.md',
   2: 'phase-2-data-model.md',
@@ -14,14 +10,45 @@ const PHASE_FILES: Record<SpecPhase, string> = {
   4: 'phase-4-business-logic.md',
   5: 'phase-5-operations.md',
   6: 'phase-6-integration.md',
-};
+  7: 'phase-7-maintenance.md',
+} as const;
+
+export type SpecPhase = keyof typeof PHASE_FILES;
+
+const IRON_RULES_FILE = 'iron-rules.md';
 
 const promptsDir = dirname(fileURLToPath(import.meta.url));
 
-export function loadPromptTemplate(phase: SpecPhase): string {
-  if (phase < 0 || phase >= PHASE_COUNT) {
-    throw new RangeError(`phase must be 0..${PHASE_COUNT - 1}, got ${String(phase)}`);
+let ironRulesCache: string | undefined;
+
+export function loadIronRules(): string {
+  if (ironRulesCache !== undefined) {
+    return ironRulesCache;
   }
-  const file = join(promptsDir, PHASE_FILES[phase]);
-  return readFileSync(file, 'utf8');
+  const ironPath = join(promptsDir, IRON_RULES_FILE);
+  try {
+    ironRulesCache = readFileSync(ironPath, 'utf8');
+  } catch (e) {
+    throw new Error(`Failed to load ${IRON_RULES_FILE} from ${promptsDir}: ${String(e)}`);
+  }
+  return ironRulesCache;
+}
+
+function readPhaseMarkdown(relativeName: string): string {
+  const path = join(promptsDir, relativeName);
+  try {
+    return readFileSync(path, 'utf8');
+  } catch (e) {
+    throw new Error(`Failed to load ${relativeName} from ${promptsDir}: ${String(e)}`);
+  }
+}
+
+export function loadPromptTemplate(phase: SpecPhase): string {
+  if (!(phase in PHASE_FILES)) {
+    const valid = Object.keys(PHASE_FILES).join(', ');
+    throw new RangeError(`Invalid phase: ${String(phase)}. Valid phases: ${valid}`);
+  }
+  const relativeName = PHASE_FILES[phase];
+  const body = readPhaseMarkdown(relativeName);
+  return `${loadIronRules()}\n\n---\n\n${body}`;
 }

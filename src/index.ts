@@ -11,7 +11,8 @@ const mcpServer = new McpServer(
   {
     instructions:
       'Inverspec MCP server exposes tools that return English Markdown prompt templates for reverse-engineering ' +
-      'a technical specification in seven phases (0–6). Call the phase tool that matches the current workflow step.',
+      'a technical specification in eight phases (0–7). Phase 7 covers ongoing spec maintenance after the initial pass. ' +
+      'Call the phase tool that matches the current workflow step.',
   },
 );
 
