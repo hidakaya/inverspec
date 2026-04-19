@@ -9,18 +9,18 @@ interface Config {
 }
 
 export function getLicenseKey(): string | undefined {
-  // 環境変数を優先
+  // Prefer environment variable
   if (process.env.INVERSPEC_LICENSE_KEY) {
     return process.env.INVERSPEC_LICENSE_KEY;
   }
-  // 設定ファイルから読み込み
+  // Load from config file
   try {
     if (fs.existsSync(CONFIG_PATH)) {
       const config: Config = JSON.parse(fs.readFileSync(CONFIG_PATH, "utf-8"));
       return config.license_key;
     }
   } catch {
-    // 読み込み失敗時は無視
+    // Ignore read failures
   }
   return undefined;
 }

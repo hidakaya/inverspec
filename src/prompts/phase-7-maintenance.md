@@ -56,6 +56,6 @@ For each section that needs an update, output **only** that section’s new body
 ## Rules for this phase
 
 - Do not output sections that are unrelated to the code change.
-- Do not write from speculation; use **`[要確認]`** where facts are missing.
-- If comments disagree with code, record **`🟡 [要確認: コメントと実装が不一致]`**.
+- Do not write from speculation; use **`[VERIFY]`** where facts are missing.
+- If comments disagree with code, record **`🟡 [VERIFY: comment does not match implementation]`**.
 - Update the spec footer **version** and **last updated** fields when your workflow includes them.

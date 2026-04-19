@@ -1,5 +1,5 @@
 const VALIDATION_API = "https://inverspec-api.hidakaya.workers.dev/validate";
-const CACHE_TTL_MS = 60 * 60 * 1000; // 1時間
+const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
 
 interface Cache {
   valid: boolean;
@@ -19,7 +19,7 @@ export async function requirePro(licenseKey: string | undefined): Promise<void> 
     );
   }
 
-  // キャッシュ確認
+  // Use cached validation result if still valid
   if (cache && Date.now() < cache.expires) {
     if (!cache.valid) {
       throw new Error("\n[Inverspec Pro] Your license is inactive or expired.\n");
@@ -27,7 +27,7 @@ export async function requirePro(licenseKey: string | undefined): Promise<void> 
     return;
   }
 
-  // Validation APIへ問い合わせ
+  // Call validation API
   try {
     const res = await fetch(VALIDATION_API, {
       method: "POST",
@@ -43,7 +43,7 @@ export async function requirePro(licenseKey: string | undefined): Promise<void> 
     }
   } catch (e: any) {
     if (e.message.includes("Inverspec Pro")) throw e;
-    // ネットワークエラー時はキャッシュがあれば許可
+    // On network errors, allow if we have a previous successful cache
     if (cache !== null) return;
     throw new Error("\n[Inverspec Pro] Could not verify license. Check your internet connection.\n");
   }

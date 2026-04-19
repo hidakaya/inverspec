@@ -5,7 +5,7 @@ Follow these rules for **all** Inverspec work. They apply on top of the phase-sp
 ## Evidence and uncertainty
 
 - **Open files and verify.** Do not invent behaviour from memory or guesswork.
-- When something is unknown, tag it **`[要確認]`** and do not fill gaps with speculation.
+- When something is unknown, tag it **`[VERIFY]`** and do not fill gaps with speculation.
 
 ## Phase progression
 
@@ -18,11 +18,11 @@ Before proceeding to the next phase, **explicitly ask the user**, for example:
 ## Security and auth
 
 - When you find missing authentication or authorisation that should exist, record it immediately as a **security concern** using a **`🔴`** line in the spec (or the phase template’s required format).
-- **How this relates to Phase 3:** In **Phase 3** feature cards, use the mandatory line label **`Security risk (auth):`** when a route or handler has no located guard and is not clearly public-by-design. In **other phases**, or for cross-cutting findings, use the **`🔴`** / **`[要確認]`** conventions described in this block and in that phase’s template.
+- **How this relates to Phase 3:** In **Phase 3** feature cards, use the mandatory line label **`Security risk (auth):`** when a route or handler has no located guard and is not clearly public-by-design. In **other phases**, or for cross-cutting findings, use the **`🔴`** / **`[VERIFY]`** conventions described in this block and in that phase’s template.
 
 ## Comments vs code
 
-- Treat comments as hypotheses until checked against code. If comment and implementation disagree, record **`🟡 [要確認: コメントと実装が不一致]`**.
+- Treat comments as hypotheses until checked against code. If comment and implementation disagree, record **`🟡 [VERIFY: comment does not match implementation]`**.
 
 ## Deliverables
 
