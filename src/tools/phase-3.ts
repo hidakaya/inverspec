@@ -11,6 +11,7 @@ export function registerPhase3Tool(server: McpServer): void {
     {
       description:
         'Returns the Phase 3 prompt template for routes, screens, APIs, and user-visible behavior. ' +
+        'Instructs reading one handler implementation file at a time and flagging missing auth guards with `Security risk (auth):`. ' +
         'Run after Phase 2 data model is complete.',
       inputSchema: {
         projectPath: z

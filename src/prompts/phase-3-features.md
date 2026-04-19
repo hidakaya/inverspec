@@ -8,6 +8,12 @@ Phase 1 architecture map and Phase 2 data model must be complete. Use the route 
 
 ## Steps
 
+> **Read handler implementation files one at a time.** You may build the route catalogue from router definition files in one pass, but when reading **controllers, route handlers, GraphQL resolvers, or RPC procedure bodies**, work through **one implementation file (or one cohesive module) per pass**. Do not paste many large handler files into a single turn — accuracy drops sharply.
+
+> **Trace authentication and authorisation in implementation code.** For each route or procedure, identify where guards attach — for example: `before_action` / `authenticate_*` (Rails), `middleware` / route-level guards (Express / Fastify / Nest), `@PreAuthorize` / filter chains (Spring), `permission_classes` / `authentication_classes` (Django REST), `Policy` / `Gate` (Laravel), resolver or field directives (GraphQL). If an endpoint is **intentionally public**, say so explicitly in the catalogue or feature card.
+
+> **`Security risk (auth):` is mandatory** when no authentication or authorisation guard can be located for a route or handler **and** you cannot justify it as **public-by-design**. Add exactly one line using that label (see the feature card template). **Omit the line entirely when there is no issue** — do not write "none", "N/A", or empty filler (same convention as **Schema risk:** in Phase 2).
+
 ### 3-A  Build the route / endpoint catalogue
 Enumerate all routes or endpoints from the router definition file(s). For REST APIs:
 
@@ -28,6 +34,10 @@ For each meaningful feature (not each individual route), write a feature card:
 
 **Routes:** GET /path, POST /path
 **Actor:** Who initiates this (end user, admin, API consumer, background job)
+**Authentication:** Required / Optional / Public by design — one line (where the guard lives in code, or why it is public)
+**Authorisation:** Who may perform this (roles, policies, ownership rules, or "any authenticated user")
+
+Security risk (auth): <omit this line entirely if none>
 
 ### Request
 - Parameters / body fields (name, type, required, validation rule)
@@ -77,6 +87,7 @@ If the application has a frontend, map each screen or page component to:
 Write `docs/spec/03-features.md` (or split into per-domain files under `docs/spec/features/`).
 
 ## Output checklist
+- [ ] Every route or feature has a defensible authentication and authorisation story, **or** a `Security risk (auth):` line where no guard is found and the surface is not justified as public-by-design
 - [ ] Complete route / endpoint catalogue (table format)
 - [ ] Feature card for each major feature
 - [ ] UI screen map (if frontend exists)
