@@ -107,7 +107,7 @@ Each phase tool accepts a projectPath and returns a detailed Markdown prompt tem
 |-------|----------------------|
 | 0 | File tree, tech stack, scope boundary |
 | 1 | Entry points, layers, request lifecycle, integrations |
-| 2 | Entities, ER diagram, migrations, validation rules |
+| 2 | Entities, ER diagram(s) including domain-split layouts for large schemas, migrations, validation rules |
 | 3 | Routes, API contracts, UI screens, webhooks |
 | 4 | Domain rules, state machines, permissions, jobs |
 | 5 | Config, deploy pipeline, observability, runbooks |

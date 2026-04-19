@@ -39,6 +39,8 @@ Where Phase 3 (features) refers to a service described in Phase 4 (business logi
 
 Where Phase 2 (data model) defines an entity referenced in Phase 3, link back to the entity sheet. Make the document graph navigable.
 
+When `02-data-model.md` contains multiple ER diagram sections (domain-split layouts), use heading anchors in links — for example `./02-data-model.md#er--auth-domain` — so each link targets the correct diagram block.
+
 ### 6-D  Write the executive summary
 Create `docs/spec/README.md` containing:
 

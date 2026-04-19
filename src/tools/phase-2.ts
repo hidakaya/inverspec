@@ -9,6 +9,7 @@ export function registerPhase2Tool(server: McpServer): void {
     {
       description:
         'Returns the Phase 2 prompt template for data models, persistence, and validation. ' +
+        'For large primary schemas (>20 tables), the prompt instructs domain-split Mermaid ER diagrams. ' +
         'Run after Phase 1 architecture map is complete.',
       inputSchema: {
         projectPath: z
