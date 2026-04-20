@@ -137,7 +137,7 @@ Add this to `.cursor/mcp.json`:
 
 ---
 
-### Claude Code（CLI）
+### Claude Code (CLI)
 
 ```bash
 claude mcp add inverspec -- npx -y mcp-server-inverspec
