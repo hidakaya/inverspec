@@ -29,25 +29,25 @@ An [MCP (Model Context Protocol)](https://modelcontextprotocol.io) server that g
 
 ## Quick start
 
-> **macOS ユーザーへ：** `npx` は macOS の PATH 競合（ImageMagick の `import` コマンドなど）により動作しない場合があります。以下の **npm グローバルインストール** を推奨します。
+> **For macOS users:** `npx` may fail due to PATH conflicts on some systems (for example, ImageMagick's `import` command). We recommend the global npm installation below.
 
-### Claude Desktop — npm グローバルインストール（macOS 推奨）
+### Claude Desktop — global npm install (recommended for macOS)
 
-**ステップ 1：グローバルインストール**
+**Step 1: Install globally**
 
 ```bash
 npm install -g mcp-server-inverspec
 ```
 
-**ステップ 2：バイナリのフルパスを確認**
+**Step 2: Check the full binary path**
 
 ```bash
 which mcp-server-inverspec
-# 例: /opt/homebrew/bin/mcp-server-inverspec
+# Example: /opt/homebrew/bin/mcp-server-inverspec
 #     /usr/local/bin/mcp-server-inverspec
 ```
 
-**ステップ 3：`claude_desktop_config.json` に記述**
+**Step 3: Add it to `claude_desktop_config.json`**
 
 `~/Library/Application Support/Claude/claude_desktop_config.json`:
 
@@ -62,11 +62,11 @@ which mcp-server-inverspec
 }
 ```
 
-> `args` のパスは `which mcp-server-inverspec` の結果に応じて調整してください。  
-> 例：`/opt/homebrew/bin/mcp-server-inverspec` と表示された場合、実体は  
-> `/opt/homebrew/lib/node_modules/mcp-server-inverspec/dist/index.js` です。
+> Adjust the `args` path based on the output of `which mcp-server-inverspec`.  
+> Example: if it shows `/opt/homebrew/bin/mcp-server-inverspec`, the actual file is  
+> `/opt/homebrew/lib/node_modules/mcp-server-inverspec/dist/index.js`.
 
-**Pro の場合（ライセンスキーあり）：**
+**For Pro users (with license key):**
 
 ```json
 {
@@ -84,9 +84,9 @@ which mcp-server-inverspec
 
 ---
 
-### Claude Desktop — npx（Linux / Windows）
+### Claude Desktop — npx (Linux / Windows)
 
-macOS 以外の環境、または PATH 競合が発生しない場合：
+Use this on non-macOS systems, or when no PATH conflicts occur:
 
 ```json
 {
@@ -99,7 +99,7 @@ macOS 以外の環境、または PATH 競合が発生しない場合：
 }
 ```
 
-**Pro の場合：**
+**For Pro users:**
 
 ```json
 {
@@ -119,7 +119,7 @@ macOS 以外の環境、または PATH 競合が発生しない場合：
 
 ### Cursor
 
-`.cursor/mcp.json` に記述：
+Add this to `.cursor/mcp.json`:
 
 ```json
 {
