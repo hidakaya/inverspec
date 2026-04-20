@@ -1,5 +1,5 @@
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-import { existsSync, readFileSync, readdirSync, statSync } from 'fs';
+import { existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from 'fs';
 import { join, resolve } from 'path';
 import { z } from 'zod';
 
@@ -142,6 +142,63 @@ export function registerFilesystemTools(server: McpServer): void {
       }
 
       return { content: [{ type: 'text', text: results.join('\n') }] };
+    },
+  );
+
+  // File write
+  server.registerTool(
+    'inverspec_write_file',
+    {
+      description:
+        'Write content to a file on the local filesystem. Creates the file if it does not exist, overwrites if it does. Use this to save generated specification documents.',
+      inputSchema: {
+        path: z.string().describe('Absolute path to the file to write.'),
+        content: z.string().describe('Content to write to the file.'),
+      },
+    },
+    async ({ path, content }) => {
+      const absPath = resolve(path);
+      try {
+        const dir = absPath.substring(0, absPath.lastIndexOf('/'));
+        if (dir && !existsSync(dir)) {
+          mkdirSync(dir, { recursive: true });
+        }
+        writeFileSync(absPath, content, 'utf-8');
+        return {
+          content: [
+            {
+              type: 'text',
+              text: `✓ Written to ${absPath} (${Buffer.byteLength(content, 'utf-8')} bytes)`,
+            },
+          ],
+        };
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error);
+        return { content: [{ type: 'text', text: `Error: ${message}` }] };
+      }
+    },
+  );
+
+  // Directory creation
+  server.registerTool(
+    'inverspec_create_directory',
+    {
+      description: 'Create a directory (and any missing parent directories) on the local filesystem.',
+      inputSchema: {
+        path: z.string().describe('Absolute path to the directory to create.'),
+      },
+    },
+    async ({ path }) => {
+      const absPath = resolve(path);
+      try {
+        mkdirSync(absPath, { recursive: true });
+        return {
+          content: [{ type: 'text', text: `✓ Directory created: ${absPath}` }],
+        };
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error);
+        return { content: [{ type: 'text', text: `Error: ${message}` }] };
+      }
     },
   );
 }
