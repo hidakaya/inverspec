@@ -147,48 +147,51 @@ claude mcp add inverspec -- npx -y mcp-server-inverspec
 
 ## Usage
 
-> **重要：** Inverspec は **Claude Desktop アプリ**（ローカルで動作）専用です。ブラウザ版の claude.ai からはローカルファイルにアクセスできないため動作しません。
+> **Important:** Inverspec runs on **Claude Desktop** (local). It does not work on the browser-based claude.ai because that environment cannot access your local filesystem.
 
-### プロジェクトパスの調べ方
+### Finding your project path
 
-Inverspec にはプロジェクトの**絶対パス**（フルパス）を指定する必要があります。
+Inverspec requires the **absolute path** to your project root.
 
-**macOS / Linux の場合：** ターミナルでプロジェクトフォルダに移動して `pwd` を実行します：
+**macOS / Linux** — open a terminal, navigate to your project, and run `pwd`:
 
 ```bash
 cd ~/Development/my-app
 pwd
-# → /Users/あなたのユーザー名/Development/my-app
+# → /Users/your-username/Development/my-app
 ```
 
-**Windows の場合：** エクスプローラーでフォルダを開き、アドレスバーをクリックするとフルパスが表示されます。
+**Windows** — open the folder in Explorer, then click the address bar to reveal the full path.
 
-**パスが分からない場合：** プロジェクトを zip に固めて Claude Desktop のチャットにドラッグ＆ドロップする方法でも動作します：
+**Can't find the path?** You can also zip your project and drag-and-drop it into the Claude Desktop chat:
 
 ```bash
 # macOS / Linux
 cd ~/Development
-zip -r my-app.zip my-app --exclude "*/node_modules/*" --exclude "*/.git/*" --exclude "*/target/*"
+zip -r my-app.zip my-app \
+  --exclude "*/node_modules/*" \
+  --exclude "*/.git/*" \
+  --exclude "*/target/*"
 ```
 
 ---
 
-### 推奨プロンプト（一気に最後まで実行）
+### Recommended prompt — run all phases in one go
 
-Claude Desktop で新しいチャットを開いて以下のように入力してください：
-
-```
-/Users/あなたのユーザー名/Development/my-app の仕様書を作ってください。
-Phase 0 から 6 まで確認なしで一気に進めてください。
-各フェーズの結果はプロジェクト内の docs/spec/ に保存してください。
-```
-
-> 初回実行時にファイルアクセスの許可確認が数回表示されます。「許可」を選択してください。2回目以降は確認なしで進みます。
-
-フェーズを個別に実行することもできます：
+Open a new chat in Claude Desktop and type:
 
 ```
-/Users/あなたのユーザー名/Development/my-app の Phase 2（データモデル）だけ実行してください
+Create a technical specification for /Users/your-username/Development/my-app.
+Run Phase 0 through 6 without stopping for confirmation.
+Save the output of each phase to docs/spec/ inside the project.
+```
+
+> On the first run, Claude Desktop will ask for file-access permission a few times. Click **Allow**. Subsequent calls within the same session require no further confirmation.
+
+You can also run a single phase:
+
+```
+Run only Phase 2 (data model) on /Users/your-username/Development/my-app
 ```
 
 ---
@@ -224,14 +227,14 @@ docs/spec/
 
 ---
 
-## claude.ai との違い
+## claude.ai vs Claude Desktop
 
-| 環境 | ローカルファイルアクセス | 推奨 |
-|------|------------------------|------|
-| Claude Desktop アプリ | ✅ 可能 | ✅ こちらを使用 |
-| claude.ai（ブラウザ） | ❌ 不可 | zip アップロードで代用 |
-| Cursor | ✅ 可能 | ✅ |
-| Claude Code（CLI） | ✅ 可能 | ✅ |
+| Environment | Local file access | Supported |
+|-------------|------------------|-----------|
+| Claude Desktop app | ✅ Yes | ✅ Recommended |
+| claude.ai (browser) | ❌ No | Upload a zip instead |
+| Cursor | ✅ Yes | ✅ |
+| Claude Code (CLI) | ✅ Yes | ✅ |
 
 ---
 
