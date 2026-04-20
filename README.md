@@ -29,10 +29,66 @@ An [MCP (Model Context Protocol)](https://modelcontextprotocol.io) server that g
 
 ## Quick start
 
-### Claude Desktop (Free)
+> **macOS ユーザーへ：** `npx` は macOS の PATH 競合（ImageMagick の `import` コマンドなど）により動作しない場合があります。以下の **npm グローバルインストール** を推奨します。
 
-Add to ~/Library/Application Support/Claude/claude_desktop_config.json (macOS):
+### Claude Desktop — npm グローバルインストール（macOS 推奨）
 
+**ステップ 1：グローバルインストール**
+
+```bash
+npm install -g mcp-server-inverspec
+```
+
+**ステップ 2：バイナリのフルパスを確認**
+
+```bash
+which mcp-server-inverspec
+# 例: /opt/homebrew/bin/mcp-server-inverspec
+#     /usr/local/bin/mcp-server-inverspec
+```
+
+**ステップ 3：`claude_desktop_config.json` に記述**
+
+`~/Library/Application Support/Claude/claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "inverspec": {
+      "command": "node",
+      "args": ["/opt/homebrew/lib/node_modules/mcp-server-inverspec/dist/index.js"]
+    }
+  }
+}
+```
+
+> `args` のパスは `which mcp-server-inverspec` の結果に応じて調整してください。  
+> 例：`/opt/homebrew/bin/mcp-server-inverspec` と表示された場合、実体は  
+> `/opt/homebrew/lib/node_modules/mcp-server-inverspec/dist/index.js` です。
+
+**Pro の場合（ライセンスキーあり）：**
+
+```json
+{
+  "mcpServers": {
+    "inverspec": {
+      "command": "node",
+      "args": ["/opt/homebrew/lib/node_modules/mcp-server-inverspec/dist/index.js"],
+      "env": {
+        "INVERSPEC_LICENSE_KEY": "YOUR-LICENSE-KEY"
+      }
+    }
+  }
+}
+```
+
+---
+
+### Claude Desktop — npx（Linux / Windows）
+
+macOS 以外の環境、または PATH 競合が発生しない場合：
+
+```json
 {
   "mcpServers": {
     "inverspec": {
@@ -41,11 +97,11 @@ Add to ~/Library/Application Support/Claude/claude_desktop_config.json (macOS):
     }
   }
 }
+```
 
-### Claude Desktop (Pro)
+**Pro の場合：**
 
-Set your license key via environment variable:
-
+```json
 {
   "mcpServers": {
     "inverspec": {
@@ -57,17 +113,15 @@ Set your license key via environment variable:
     }
   }
 }
+```
 
-Or create a config file at ~/.config/inverspec/config.json:
-
-{
-  "license_key": "YOUR-LICENSE-KEY"
-}
+---
 
 ### Cursor
 
-Add to .cursor/mcp.json in your project root:
+`.cursor/mcp.json` に記述：
 
+```json
 {
   "mcpServers": {
     "inverspec": {
@@ -79,10 +133,15 @@ Add to .cursor/mcp.json in your project root:
     }
   }
 }
+```
 
-### Claude Code (CLI)
+---
 
+### Claude Code（CLI）
+
+```bash
 claude mcp add inverspec -- npx -y mcp-server-inverspec
+```
 
 ---
 

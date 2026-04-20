@@ -12,7 +12,7 @@
     "README.md"
   ],
   "scripts": {
-    "build": "tsc && cp src/prompts/*.md dist/prompts/",
+    "build": "tsc && cp src/prompts/*.md dist/prompts/ && node scripts/add-shebang.mjs",
     "start": "node ./dist/index.js",
     "dev": "tsc && cp src/prompts/*.md dist/prompts/ && node ./dist/index.js",
     "prepublishOnly": "npm run build",
