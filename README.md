@@ -147,15 +147,49 @@ claude mcp add inverspec -- npx -y mcp-server-inverspec
 
 ## Usage
 
-Once the server is connected, ask your AI assistant:
+> **重要：** Inverspec は **Claude Desktop アプリ**（ローカルで動作）専用です。ブラウザ版の claude.ai からはローカルファイルにアクセスできないため動作しません。
 
-"Use inverspec to create a technical specification for the project at /path/to/my-app"
+### プロジェクトパスの調べ方
 
-The assistant will call the phase tools in order, reading the codebase and writing output to docs/spec/ inside the target project.
+Inverspec にはプロジェクトの**絶対パス**（フルパス）を指定する必要があります。
 
-You can also invoke phases individually:
+**macOS / Linux の場合：** ターミナルでプロジェクトフォルダに移動して `pwd` を実行します：
 
-"Run inverspec phase 2 on /path/to/my-app to document the data model"
+```bash
+cd ~/Development/my-app
+pwd
+# → /Users/あなたのユーザー名/Development/my-app
+```
+
+**Windows の場合：** エクスプローラーでフォルダを開き、アドレスバーをクリックするとフルパスが表示されます。
+
+**パスが分からない場合：** プロジェクトを zip に固めて Claude Desktop のチャットにドラッグ＆ドロップする方法でも動作します：
+
+```bash
+# macOS / Linux
+cd ~/Development
+zip -r my-app.zip my-app --exclude "*/node_modules/*" --exclude "*/.git/*" --exclude "*/target/*"
+```
+
+---
+
+### 推奨プロンプト（一気に最後まで実行）
+
+Claude Desktop で新しいチャットを開いて以下のように入力してください：
+
+```
+/Users/あなたのユーザー名/Development/my-app の仕様書を作ってください。
+Phase 0 から 6 まで確認なしで一気に進めてください。
+各フェーズの結果はプロジェクト内の docs/spec/ に保存してください。
+```
+
+> 初回実行時にファイルアクセスの許可確認が数回表示されます。「許可」を選択してください。2回目以降は確認なしで進みます。
+
+フェーズを個別に実行することもできます：
+
+```
+/Users/あなたのユーザー名/Development/my-app の Phase 2（データモデル）だけ実行してください
+```
 
 ---
 
@@ -187,6 +221,17 @@ docs/spec/
   03-features.md         - API catalogue, feature cards
   04-business-logic.md   - Domain rules, state machines
   05-operations.md       - Config, deploy, observability
+
+---
+
+## claude.ai との違い
+
+| 環境 | ローカルファイルアクセス | 推奨 |
+|------|------------------------|------|
+| Claude Desktop アプリ | ✅ 可能 | ✅ こちらを使用 |
+| claude.ai（ブラウザ） | ❌ 不可 | zip アップロードで代用 |
+| Cursor | ✅ 可能 | ✅ |
+| Claude Code（CLI） | ✅ 可能 | ✅ |
 
 ---
 
