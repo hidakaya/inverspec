@@ -11,7 +11,8 @@ let cache: Cache | null = null;
 export async function requirePro(licenseKey: string | undefined): Promise<void> {
   if (!licenseKey) {
     throw new Error(
-      "\n[Inverspec Pro] A license key is required for Phase 3–6.\n" +
+      "\n[Inverspec Pro] Phase 3–6 is available with a Pro license.\n" +
+      "With a license, you can generate high-quality specifications quickly and reliably using Inverspec's structured templates.\n" +
       "Get your license at: https://inverspec.lemonsqueezy.com\n" +
       "Then add it to: ~/.config/inverspec/config.json\n" +
       '  { "license_key": "YOUR-KEY" }\n' +
@@ -22,7 +23,10 @@ export async function requirePro(licenseKey: string | undefined): Promise<void> 
   // Use cached validation result if still valid
   if (cache && Date.now() < cache.expires) {
     if (!cache.valid) {
-      throw new Error("\n[Inverspec Pro] Your license is inactive or expired.\n");
+      throw new Error(
+        "\n[Inverspec Pro] Your license is inactive or expired.\n" +
+        "Please check your license at: https://inverspec.lemonsqueezy.com\n"
+      );
     }
     return;
   }
@@ -39,7 +43,10 @@ export async function requirePro(licenseKey: string | undefined): Promise<void> 
     cache = { valid, expires: Date.now() + CACHE_TTL_MS };
 
     if (!valid) {
-      throw new Error("\n[Inverspec Pro] Your license is inactive or expired.\n");
+      throw new Error(
+        "\n[Inverspec Pro] Your license is inactive or expired.\n" +
+        "Please check your license at: https://inverspec.lemonsqueezy.com\n"
+      );
     }
   } catch (e: any) {
     if (e.message.includes("Inverspec Pro")) throw e;
