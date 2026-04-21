@@ -14,14 +14,14 @@ An [MCP (Model Context Protocol)](https://modelcontextprotocol.io) server that g
 
 | Phase | Tool | Free | Pro |
 |-------|------|------|-----|
-| 0 | inverspec_phase_0_inventory | yes | yes |
-| 1 | inverspec_phase_1_architecture | yes | yes |
-| 2 | inverspec_phase_2_data_model | yes | yes |
-| 3 | inverspec_phase_3_features | - | yes |
-| 4 | inverspec_phase_4_business_logic | - | yes |
-| 5 | inverspec_phase_5_operations | - | yes |
-| 6 | inverspec_phase_6_integration | - | yes |
-| 7 | inverspec_phase_7_maintenance | - | yes |
+| 0 | inverspec_phase_0_inventory | ✅ full | ✅ full |
+| 1 | inverspec_phase_1_architecture | ✅ full | ✅ full |
+| 2 | inverspec_phase_2_data_model | ✅ full | ✅ full |
+| 3 | inverspec_phase_3_features | preview | ✅ full |
+| 4 | inverspec_phase_4_business_logic | preview | ✅ full |
+| 5 | inverspec_phase_5_operations | preview | ✅ full |
+| 6 | inverspec_phase_6_integration | preview | ✅ full |
+| 7 | inverspec_phase_7_maintenance | - | ✅ full |
 
 **Pro**: $19/month or $190/year (2 months free) — Get a license: https://inverspec.lemonsqueezy.com
 
