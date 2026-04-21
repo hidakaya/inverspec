@@ -1,6 +1,7 @@
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 
+import { fetchPrompt } from '../api.js';
 import { loadPromptTemplate } from '../prompts/load-prompt.js';
 
 export function registerPhase2Tool(server: McpServer): void {
@@ -17,13 +18,16 @@ export function registerPhase2Tool(server: McpServer): void {
           .describe('Absolute path to the root directory of the project to analyse.'),
       },
     },
-    async ({ projectPath }) => ({
-      content: [
+    async ({ projectPath }) => {
+      const prompt = (await fetchPrompt(2)) ?? loadPromptTemplate(2);
+      return {
+        content: [
         {
           type: 'text',
-          text: `**Target project:** \`${projectPath}\`\n\n${loadPromptTemplate(2)}`,
+          text: `**Target project:** \`${projectPath}\`\n\n${prompt}`,
         },
-      ],
-    }),
+        ],
+      };
+    },
   );
 }

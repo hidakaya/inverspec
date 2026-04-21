@@ -1,9 +1,8 @@
-import { checkPro } from '../license.js';
-import { getLicenseKey } from '../config.js';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 
-import { loadPromptTemplate, type PromptMode } from '../prompts/load-prompt.js';
+import { fetchPrompt, ProRequiredError, PRO_REQUIRED_MESSAGE } from '../api.js';
+import { loadPromptTemplate } from '../prompts/load-prompt.js';
 
 export function registerPhase5Tool(server: McpServer): void {
   server.registerTool(
@@ -20,16 +19,22 @@ export function registerPhase5Tool(server: McpServer): void {
       },
     },
     async ({ projectPath }) => {
-      const isPro = await checkPro(getLicenseKey());
-      const mode: PromptMode = isPro ? 'full' : 'preview';
-      return ({
-      content: [
-        {
-          type: 'text',
-          text: `**Target project:** \`${projectPath}\`\n\n${loadPromptTemplate(5, mode)}`,
-        },
-      ],
-    });
+      try {
+        const prompt = (await fetchPrompt(5)) ?? loadPromptTemplate(5, 'preview');
+        return {
+          content: [
+            {
+              type: 'text',
+              text: `**Target project:** \`${projectPath}\`\n\n${prompt}`,
+            },
+          ],
+        };
+      } catch (error) {
+        if (error instanceof ProRequiredError) {
+          throw new Error(PRO_REQUIRED_MESSAGE);
+        }
+        throw error;
+      }
     },
   );
 }

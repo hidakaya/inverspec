@@ -1,8 +1,7 @@
-import { requirePro } from '../license.js';
-import { getLicenseKey } from '../config.js';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 
+import { fetchPrompt, ProRequiredError, PRO_REQUIRED_MESSAGE } from '../api.js';
 import { loadPromptTemplate } from '../prompts/load-prompt.js';
 
 export function registerPhase7Tool(server: McpServer): void {
@@ -19,15 +18,22 @@ export function registerPhase7Tool(server: McpServer): void {
       },
     },
     async ({ projectPath }) => {
-      await requirePro(getLicenseKey());
-      return {
-        content: [
-          {
-            type: 'text',
-            text: `**Target project:** \`${projectPath}\`\n\n${loadPromptTemplate(7)}`,
-          },
-        ],
-      };
+      try {
+        const prompt = (await fetchPrompt(7)) ?? loadPromptTemplate(7);
+        return {
+          content: [
+            {
+              type: 'text',
+              text: `**Target project:** \`${projectPath}\`\n\n${prompt}`,
+            },
+          ],
+        };
+      } catch (error) {
+        if (error instanceof ProRequiredError) {
+          throw new Error(PRO_REQUIRED_MESSAGE);
+        }
+        throw error;
+      }
     },
   );
 }
