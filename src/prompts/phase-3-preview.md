@@ -1,12 +1,13 @@
-<!-- prompt-version: 1.0.0 | tool: inverspec_phase_3_features | updated: 2026-04-21 -->
-# Phase 3 — Feature specifications (Preview)
+# Phase 3 — Feature specifications (Overview)
 
-You are viewing a concise preview of the detected feature surfaces.
+List the top-level route groups found in the router definition file(s) only.
+For each group, write one sentence describing its general purpose.
 
-- Route candidate: `GET /api/v1/users`
-- Route candidate: `POST /api/v1/users`
-- Route candidate: `GET /api/v1/users/:id`
+Do not document individual endpoints, HTTP methods, request/response contracts, authentication rules, or edge cases.
+Do not read handler or controller implementation files.
 
-To generate the complete Phase 3 specification with full request/response contracts and edge-case coverage, Inverspec Pro is required.
+Output example:
+- `/owners` — manages owner profiles and search
+- `/pets` — manages pet registration under an owner
 
-Get your license: https://inverspec.lemonsqueezy.com
+Stop after listing the route groups. Do not proceed further.

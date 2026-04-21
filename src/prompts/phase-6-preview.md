@@ -1,12 +1,13 @@
-<!-- prompt-version: 1.0.0 | tool: inverspec_phase_6_integration | updated: 2026-04-21 -->
-# Phase 6 — Integrations and interfaces (Preview)
+# Phase 6 — Integrations and interfaces (Overview)
 
-You are viewing a concise preview of discovered integration surfaces.
+List the external systems or services the application appears to connect to, based on dependency definitions only (e.g. package.json, pom.xml, Gemfile).
+For each, write one sentence describing its role.
 
-- Integration area: outbound third-party API calls
-- Integration area: inbound webhooks or callbacks
-- Integration area: authentication and retry boundaries
+Do not document API contracts, webhook handlers, authentication flows, or failure modes.
+Do not read implementation files.
 
-To generate the complete Phase 6 specification with full integration contracts and failure-mode analysis, Inverspec Pro is required.
+Output example:
+- `stripe` — payment processing
+- `sendgrid` — email delivery
 
-Get your license: https://inverspec.lemonsqueezy.com
+Stop after listing the integrations. Do not proceed further.

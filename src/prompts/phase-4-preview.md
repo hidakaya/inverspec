@@ -1,12 +1,13 @@
-<!-- prompt-version: 1.0.0 | tool: inverspec_phase_4_business_logic | updated: 2026-04-21 -->
-# Phase 4 — Business logic (Preview)
+# Phase 4 — Business logic (Overview)
 
-You are viewing a concise preview of inferred business-logic areas.
+List the top-level service or use-case files found in the project only.
+For each file, write one sentence describing its general responsibility.
 
-- Rule area: pricing and threshold checks
-- Rule area: permission and role enforcement
-- Rule area: state transitions and side effects
+Do not document individual rules, algorithms, state machines, or workflows.
+Do not read implementation files.
 
-To generate the complete Phase 4 specification with full rule cards and state-machine coverage, Inverspec Pro is required.
+Output example:
+- `OrderService` — handles order creation and cancellation
+- `PricingService` — responsible for price calculation
 
-Get your license: https://inverspec.lemonsqueezy.com
+Stop after listing the service files. Do not proceed further.

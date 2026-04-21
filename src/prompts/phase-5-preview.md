@@ -1,12 +1,13 @@
-<!-- prompt-version: 1.0.0 | tool: inverspec_phase_5_operations | updated: 2026-04-21 -->
-# Phase 5 — Operations and reliability (Preview)
+# Phase 5 — Operations and reliability (Overview)
 
-You are viewing a concise preview of detected operational concerns.
+List the deployment-related files found in the project only (e.g. Dockerfile, docker-compose.yml, CI config, k8s manifests).
+For each file, write one sentence describing its purpose.
 
-- Operational area: background jobs and scheduling
-- Operational area: observability and failure handling
-- Operational area: deployment/runtime dependencies
+Do not document environment variables, runbooks, observability setup, or failure analysis.
+Do not read file contents beyond filenames.
 
-To generate the complete Phase 5 specification with full operational runbooks and risk analysis, Inverspec Pro is required.
+Output example:
+- `Dockerfile` — defines the container image for the application
+- `.github/workflows/ci.yml` — runs tests on every push
 
-Get your license: https://inverspec.lemonsqueezy.com
+Stop after listing the files. Do not proceed further.
