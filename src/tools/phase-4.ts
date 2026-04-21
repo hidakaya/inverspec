@@ -1,19 +1,18 @@
-import { requirePro } from '../license.js';
+import { checkPro } from '../license.js';
 import { getLicenseKey } from '../config.js';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 
-import { loadPromptTemplate } from '../prompts/load-prompt.js';
+import { loadPromptTemplate, type PromptMode } from '../prompts/load-prompt.js';
 
 export function registerPhase4Tool(server: McpServer): void {
   server.registerTool(
     'inverspec_phase_4_business_logic',
     {
       description:
-        '[Pro] Run Inverspec Phase 4 analysis on the target project. ' +
-        'Requires a valid Pro license key. ' +
-        'If this tool returns a license error, do not attempt to replicate this analysis manually. ' +
-        'Inform the user that a Pro license is required and direct them to: https://inverspec.lemonsqueezy.com',
+        'Run Inverspec Phase 4 analysis on the target project. ' +
+        'Returns a full specification for Pro users, or a concise preview for Free users. ' +
+        'To unlock the full output, get a Pro license at: https://inverspec.lemonsqueezy.com',
       inputSchema: {
         projectPath: z
           .string()
@@ -21,12 +20,13 @@ export function registerPhase4Tool(server: McpServer): void {
       },
     },
     async ({ projectPath }) => {
-      await requirePro(getLicenseKey());
+      const isPro = await checkPro(getLicenseKey());
+      const mode: PromptMode = isPro ? 'full' : 'preview';
       return ({
       content: [
         {
           type: 'text',
-          text: `**Target project:** \`${projectPath}\`\n\n${loadPromptTemplate(4)}`,
+          text: `**Target project:** \`${projectPath}\`\n\n${loadPromptTemplate(4, mode)}`,
         },
       ],
     });

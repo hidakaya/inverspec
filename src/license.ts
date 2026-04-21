@@ -8,6 +8,35 @@ interface Cache {
 
 let cache: Cache | null = null;
 
+/**
+ * Checks whether the provided key is eligible for Pro output.
+ * Returns a boolean only; does not throw to keep tool responses non-empty.
+ */
+export async function checkPro(licenseKey: string | undefined): Promise<boolean> {
+  if (!licenseKey) {
+    return false;
+  }
+
+  // Use cached validation result if still valid
+  if (cache && Date.now() < cache.expires) {
+    return cache.valid;
+  }
+
+  try {
+    const res = await fetch(VALIDATION_API, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ license_key: licenseKey }),
+    });
+    const { valid } = await res.json() as { valid: boolean };
+    cache = { valid, expires: Date.now() + CACHE_TTL_MS };
+    return valid;
+  } catch {
+    // On network failures, use previous validation if available.
+    return cache?.valid ?? false;
+  }
+}
+
 export async function requirePro(licenseKey: string | undefined): Promise<void> {
   if (!licenseKey) {
     throw new Error(

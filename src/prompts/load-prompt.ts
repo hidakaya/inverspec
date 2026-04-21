@@ -14,6 +14,15 @@ const PHASE_FILES = {
 } as const;
 
 export type SpecPhase = keyof typeof PHASE_FILES;
+const PRO_PHASES = [3, 4, 5, 6] as const;
+export type ProPhase = (typeof PRO_PHASES)[number];
+export type PromptMode = 'full' | 'preview';
+const PREVIEW_FILES: Record<ProPhase, string> = {
+  3: 'phase-3-preview.md',
+  4: 'phase-4-preview.md',
+  5: 'phase-5-preview.md',
+  6: 'phase-6-preview.md',
+};
 
 const IRON_RULES_FILE = 'iron-rules.md';
 const FRAMEWORK_GUIDE_FILE = 'framework-guide.md';
@@ -68,11 +77,28 @@ function readPhaseMarkdown(relativeName: string): string {
   }
 }
 
-export function loadPromptTemplate(phase: SpecPhase): string {
+function isProPhase(phase: SpecPhase): phase is ProPhase {
+  return (PRO_PHASES as readonly number[]).includes(phase);
+}
+
+export function loadPromptTemplate(phase: ProPhase, mode: PromptMode): string;
+export function loadPromptTemplate(phase: SpecPhase): string;
+export function loadPromptTemplate(phase: SpecPhase, mode?: PromptMode): string {
   if (!(phase in PHASE_FILES)) {
     const valid = Object.keys(PHASE_FILES).join(', ');
     throw new RangeError(`Invalid phase: ${String(phase)}. Valid phases: ${valid}`);
   }
+
+  // Preview mode intentionally omits iron-rules/framework-guide
+  // to keep output concise and preserve Free/Pro quality distinction.
+  if (mode === 'preview') {
+    if (!isProPhase(phase)) {
+      mode = 'full';
+    } else {
+      return readPhaseMarkdown(PREVIEW_FILES[phase]);
+    }
+  }
+
   const relativeName = PHASE_FILES[phase];
   const body = readPhaseMarkdown(relativeName);
   const iron = loadIronRules();
