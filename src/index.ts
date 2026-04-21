@@ -3,10 +3,13 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 
 import { registerAllTools } from './tools/register-all.js';
 
+const APP_NAME = 'mcp-server-inverspec';
+const APP_VERSION = '1.1.4';
+
 const mcpServer = new McpServer(
   {
-    name: 'mcp-server-inverspec',
-    version: '1.0.0',
+    name: APP_NAME,
+    version: APP_VERSION,
   },
   {
     instructions:
@@ -19,12 +22,18 @@ const mcpServer = new McpServer(
 registerAllTools(mcpServer);
 
 async function main(): Promise<void> {
+  const args = process.argv.slice(2);
+  if (args.includes('-v') || args.includes('--version')) {
+    console.log(APP_VERSION);
+    return;
+  }
+
   const transport = new StdioServerTransport();
   await mcpServer.connect(transport);
-  console.error('mcp-server-inverspec: ready (stdio)');
+  console.error(`${APP_NAME}: ready (stdio)`);
 }
 
 main().catch((error: unknown) => {
-  console.error('mcp-server-inverspec: fatal error', error);
+  console.error(`${APP_NAME}: fatal error`, error);
   process.exit(1);
 });
