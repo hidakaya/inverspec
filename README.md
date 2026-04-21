@@ -147,7 +147,8 @@ claude mcp add inverspec -- npx -y mcp-server-inverspec
 
 ## Usage
 
-> **Important:** Inverspec runs on **Claude Desktop** (local). It does not work on the browser-based claude.ai because that environment cannot access your local filesystem.
+> **Important:** Inverspec no longer provides filesystem tools.
+> It returns phase prompt templates only. Saving generated documents is handled by your MCP client or by manual copy/paste.
 
 ### Finding your project path
 
@@ -163,7 +164,7 @@ pwd
 
 **Windows** — open the folder in Explorer, then click the address bar to reveal the full path.
 
-**Can't find the path?** You can also zip your project and drag-and-drop it into the Claude Desktop chat:
+**Can't find the path?** You can also zip your project and upload it in clients that support file upload:
 
 ```bash
 # macOS / Linux
@@ -183,10 +184,8 @@ Open a new chat in Claude Desktop and type:
 ```
 Create a technical specification for /Users/your-username/Development/my-app.
 Run Phase 0 through 6 without stopping for confirmation.
-Save the output of each phase to docs/spec/ inside the project.
+For each phase output, save it to docs/spec/ inside the project.
 ```
-
-> On the first run, Claude Desktop will ask for file-access permission a few times. Click **Allow**. Subsequent calls within the same session require no further confirmation.
 
 You can also run a single phase:
 
@@ -199,6 +198,8 @@ Run only Phase 2 (data model) on /Users/your-username/Development/my-app
 ## How it works
 
 Each phase tool accepts a projectPath and returns a detailed Markdown prompt template.
+The AI uses that template to analyze your project and generate phase documents.
+Inverspec does not read or write your files directly.
 
 | Phase | What gets documented |
 |-------|----------------------|
@@ -214,7 +215,7 @@ Each phase tool accepts a projectPath and returns a detailed Markdown prompt tem
 
 ## Output
 
-After a full run, the target project will contain:
+After a full run, save the generated documents under:
 
 docs/spec/
   README.md              - Executive summary and navigation guide
@@ -229,12 +230,12 @@ docs/spec/
 
 ## claude.ai vs Claude Desktop
 
-| Environment | Local file access | Supported |
-|-------------|------------------|-----------|
-| Claude Desktop app | ✅ Yes | ✅ Recommended |
-| claude.ai (browser) | ❌ No | Upload a zip instead |
-| Cursor | ✅ Yes | ✅ |
-| Claude Code (CLI) | ✅ Yes | ✅ |
+| Environment | Can run Inverspec MCP server | Recommended usage |
+|-------------|------------------------------|-------------------|
+| Claude Desktop app | ✅ Yes | Use local project path and save outputs manually |
+| claude.ai (browser) | ❌ No (MCP server not available) | Upload a zip and run prompts manually |
+| Cursor | ✅ Yes | Use local project path and save outputs manually |
+| Claude Code (CLI) | ✅ Yes | Use local project path and save outputs manually |
 
 ---
 

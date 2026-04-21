@@ -8,7 +8,6 @@ import { registerPhase4Tool } from './phase-4.js';
 import { registerPhase5Tool } from './phase-5.js';
 import { registerPhase6Tool } from './phase-6.js';
 import { registerPhase7Tool } from './phase-7.js';
-import { registerFilesystemTools } from './filesystem.js';
 
 export function registerAllTools(server: McpServer): void {
   registerPhase0Tool(server);
@@ -19,5 +18,4 @@ export function registerAllTools(server: McpServer): void {
   registerPhase5Tool(server);
   registerPhase6Tool(server);
   registerPhase7Tool(server);
-  registerFilesystemTools(server);
 }
