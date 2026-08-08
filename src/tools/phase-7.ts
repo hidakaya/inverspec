@@ -1,9 +1,13 @@
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 
-import { fetchPrompt, ProRequiredError, PRO_REQUIRED_MESSAGE } from '../api.js';
 import { loadPromptTemplate } from '../prompts/load-prompt.js';
 
+/**
+ * Registers the Phase 7 maintenance tool.
+ *
+ * @param server - MCP server instance.
+ */
 export function registerPhase7Tool(server: McpServer): void {
   server.registerTool(
     'inverspec_phase_7_maintenance',
@@ -18,22 +22,15 @@ export function registerPhase7Tool(server: McpServer): void {
       },
     },
     async ({ projectPath }) => {
-      try {
-        const prompt = (await fetchPrompt(7)) ?? loadPromptTemplate(7);
-        return {
-          content: [
-            {
-              type: 'text',
-              text: `**Target project:** \`${projectPath}\`\n\n${prompt}`,
-            },
-          ],
-        };
-      } catch (error) {
-        if (error instanceof ProRequiredError) {
-          throw new Error(PRO_REQUIRED_MESSAGE);
-        }
-        throw error;
-      }
+      const prompt = loadPromptTemplate(7);
+      return {
+        content: [
+          {
+            type: 'text',
+            text: `**Target project:** \`${projectPath}\`\n\n${prompt}`,
+          },
+        ],
+      };
     },
   );
 }

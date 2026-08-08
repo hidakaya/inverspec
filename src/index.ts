@@ -4,7 +4,7 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { registerAllTools } from './tools/register-all.js';
 
 const APP_NAME = 'mcp-server-inverspec';
-const APP_VERSION = '1.1.4';
+const APP_VERSION = '1.2.0';
 
 const mcpServer = new McpServer(
   {

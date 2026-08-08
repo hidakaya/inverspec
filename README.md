@@ -10,20 +10,20 @@ An [MCP (Model Context Protocol)](https://modelcontextprotocol.io) server that g
 
 ---
 
-## Plans
+## Phases
 
-| Phase | Tool | Free | Pro |
-|-------|------|------|-----|
-| 0 | inverspec_phase_0_inventory | ✅ full | ✅ full |
-| 1 | inverspec_phase_1_architecture | ✅ full | ✅ full |
-| 2 | inverspec_phase_2_data_model | ✅ full | ✅ full |
-| 3 | inverspec_phase_3_features | preview | ✅ full |
-| 4 | inverspec_phase_4_business_logic | preview | ✅ full |
-| 5 | inverspec_phase_5_operations | preview | ✅ full |
-| 6 | inverspec_phase_6_integration | preview | ✅ full |
-| 7 | inverspec_phase_7_maintenance | - | ✅ full |
+All eight phases are available with no license.
 
-**Pro**: $19/month or $190/year (2 months free) — Get a license: https://inverspec.lemonsqueezy.com
+| Phase | Tool |
+|-------|------|
+| 0 | inverspec_phase_0_inventory |
+| 1 | inverspec_phase_1_architecture |
+| 2 | inverspec_phase_2_data_model |
+| 3 | inverspec_phase_3_features |
+| 4 | inverspec_phase_4_business_logic |
+| 5 | inverspec_phase_5_operations |
+| 6 | inverspec_phase_6_integration |
+| 7 | inverspec_phase_7_maintenance |
 
 ---
 
@@ -37,6 +37,12 @@ An [MCP (Model Context Protocol)](https://modelcontextprotocol.io) server that g
 
 ```bash
 npm install -g mcp-server-inverspec
+```
+
+If you already installed it globally, update to the latest release:
+
+```bash
+npm install -g mcp-server-inverspec@latest
 ```
 
 **Step 2: Check the full binary path**
@@ -66,22 +72,6 @@ which mcp-server-inverspec
 > Example: if it shows `/opt/homebrew/bin/mcp-server-inverspec`, the actual file is  
 > `/opt/homebrew/lib/node_modules/mcp-server-inverspec/dist/index.js`.
 
-**For Pro users (with license key):**
-
-```json
-{
-  "mcpServers": {
-    "inverspec": {
-      "command": "node",
-      "args": ["/opt/homebrew/lib/node_modules/mcp-server-inverspec/dist/index.js"],
-      "env": {
-        "INVERSPEC_LICENSE_KEY": "YOUR-LICENSE-KEY"
-      }
-    }
-  }
-}
-```
-
 ---
 
 ### Claude Desktop — npx (Linux / Windows)
@@ -99,22 +89,6 @@ Use this on non-macOS systems, or when no PATH conflicts occur:
 }
 ```
 
-**For Pro users:**
-
-```json
-{
-  "mcpServers": {
-    "inverspec": {
-      "command": "npx",
-      "args": ["-y", "mcp-server-inverspec"],
-      "env": {
-        "INVERSPEC_LICENSE_KEY": "YOUR-LICENSE-KEY"
-      }
-    }
-  }
-}
-```
-
 ---
 
 ### Cursor
@@ -126,10 +100,7 @@ Add this to `.cursor/mcp.json`:
   "mcpServers": {
     "inverspec": {
       "command": "npx",
-      "args": ["-y", "mcp-server-inverspec"],
-      "env": {
-        "INVERSPEC_LICENSE_KEY": "YOUR-LICENSE-KEY"
-      }
+      "args": ["-y", "mcp-server-inverspec"]
     }
   }
 }

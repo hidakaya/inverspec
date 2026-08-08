@@ -1,9 +1,13 @@
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 
-import { fetchPrompt } from '../api.js';
 import { loadPromptTemplate } from '../prompts/load-prompt.js';
 
+/**
+ * Registers the Phase 2 data-model tool.
+ *
+ * @param server - MCP server instance.
+ */
 export function registerPhase2Tool(server: McpServer): void {
   server.registerTool(
     'inverspec_phase_2_data_model',
@@ -19,13 +23,13 @@ export function registerPhase2Tool(server: McpServer): void {
       },
     },
     async ({ projectPath }) => {
-      const prompt = (await fetchPrompt(2)) ?? loadPromptTemplate(2);
+      const prompt = loadPromptTemplate(2);
       return {
         content: [
-        {
-          type: 'text',
-          text: `**Target project:** \`${projectPath}\`\n\n${prompt}`,
-        },
+          {
+            type: 'text',
+            text: `**Target project:** \`${projectPath}\`\n\n${prompt}`,
+          },
         ],
       };
     },

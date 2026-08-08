@@ -14,15 +14,6 @@ const PHASE_FILES = {
 } as const;
 
 export type SpecPhase = keyof typeof PHASE_FILES;
-const PRO_PHASES = [3, 4, 5, 6] as const;
-export type ProPhase = (typeof PRO_PHASES)[number];
-export type PromptMode = 'full' | 'preview';
-const PREVIEW_FILES: Record<ProPhase, string> = {
-  3: 'phase-3-preview.md',
-  4: 'phase-4-preview.md',
-  5: 'phase-5-preview.md',
-  6: 'phase-6-preview.md',
-};
 
 const IRON_RULES_FILE = 'iron-rules.md';
 const FRAMEWORK_GUIDE_FILE = 'framework-guide.md';
@@ -34,6 +25,12 @@ const PHASES_WITH_FRAMEWORK_GUIDE = [1, 4] as const satisfies readonly SpecPhase
 let ironRulesCache: string | undefined;
 let frameworkGuideCache: string | undefined;
 
+/**
+ * Loads the shared iron-rules Markdown. Cached after first read.
+ *
+ * @returns Iron-rules template text.
+ * @throws If the file cannot be read.
+ */
 export function loadIronRules(): string {
   if (ironRulesCache !== undefined) {
     return ironRulesCache;
@@ -53,7 +50,9 @@ function shouldIncludeFrameworkGuide(phase: SpecPhase): boolean {
 
 /**
  * Framework-specific reading guide (full Markdown). Cached after first read.
- * On missing file or read failure, throws the same shape of Error as loadIronRules (promptsDir in message).
+ *
+ * @returns Framework guide Markdown.
+ * @throws If the file cannot be read.
  */
 export function loadFrameworkGuide(): string {
   if (frameworkGuideCache !== undefined) {
@@ -77,26 +76,18 @@ function readPhaseMarkdown(relativeName: string): string {
   }
 }
 
-function isProPhase(phase: SpecPhase): phase is ProPhase {
-  return (PRO_PHASES as readonly number[]).includes(phase);
-}
-
-export function loadPromptTemplate(phase: ProPhase, mode: PromptMode): string;
-export function loadPromptTemplate(phase: SpecPhase): string;
-export function loadPromptTemplate(phase: SpecPhase, mode?: PromptMode): string {
+/**
+ * Loads the full prompt template for a specification phase.
+ *
+ * @param phase - Phase number 0–7.
+ * @returns Concatenated iron-rules, optional framework guide, and phase body.
+ * @throws RangeError if phase is invalid.
+ * @throws If a required Markdown file cannot be read.
+ */
+export function loadPromptTemplate(phase: SpecPhase): string {
   if (!(phase in PHASE_FILES)) {
     const valid = Object.keys(PHASE_FILES).join(', ');
     throw new RangeError(`Invalid phase: ${String(phase)}. Valid phases: ${valid}`);
-  }
-
-  // Preview mode intentionally omits iron-rules/framework-guide
-  // to keep output concise and preserve Free/Pro quality distinction.
-  if (mode === 'preview') {
-    if (!isProPhase(phase)) {
-      mode = 'full';
-    } else {
-      return readPhaseMarkdown(PREVIEW_FILES[phase]);
-    }
   }
 
   const relativeName = PHASE_FILES[phase];

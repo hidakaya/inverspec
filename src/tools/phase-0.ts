@@ -1,9 +1,13 @@
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 
-import { fetchPrompt } from '../api.js';
 import { loadPromptTemplate } from '../prompts/load-prompt.js';
 
+/**
+ * Registers the Phase 0 inventory tool.
+ *
+ * @param server - MCP server instance.
+ */
 export function registerPhase0Tool(server: McpServer): void {
   server.registerTool(
     'inverspec_phase_0_inventory',
@@ -18,7 +22,7 @@ export function registerPhase0Tool(server: McpServer): void {
       },
     },
     async ({ projectPath }) => {
-      const prompt = (await fetchPrompt(0)) ?? loadPromptTemplate(0);
+      const prompt = loadPromptTemplate(0);
       return {
         content: [
           {

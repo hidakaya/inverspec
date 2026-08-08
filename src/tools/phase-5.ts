@@ -1,17 +1,20 @@
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 
-import { fetchPrompt, ProRequiredError, PRO_REQUIRED_MESSAGE } from '../api.js';
 import { loadPromptTemplate } from '../prompts/load-prompt.js';
 
+/**
+ * Registers the Phase 5 operations tool.
+ *
+ * @param server - MCP server instance.
+ */
 export function registerPhase5Tool(server: McpServer): void {
   server.registerTool(
     'inverspec_phase_5_operations',
     {
       description:
-        'Run Inverspec Phase 5 analysis on the target project. ' +
-        'Returns a full specification for Pro users, or a concise preview for Free users. ' +
-        'To unlock the full output, get a Pro license at: https://inverspec.lemonsqueezy.com',
+        'Returns the Phase 5 prompt template for config, deploy pipeline, observability, and runbooks. ' +
+        'Run after Phase 4 business logic is complete.',
       inputSchema: {
         projectPath: z
           .string()
@@ -19,22 +22,15 @@ export function registerPhase5Tool(server: McpServer): void {
       },
     },
     async ({ projectPath }) => {
-      try {
-        const prompt = (await fetchPrompt(5)) ?? loadPromptTemplate(5, 'preview');
-        return {
-          content: [
-            {
-              type: 'text',
-              text: `**Target project:** \`${projectPath}\`\n\n${prompt}`,
-            },
-          ],
-        };
-      } catch (error) {
-        if (error instanceof ProRequiredError) {
-          throw new Error(PRO_REQUIRED_MESSAGE);
-        }
-        throw error;
-      }
+      const prompt = loadPromptTemplate(5);
+      return {
+        content: [
+          {
+            type: 'text',
+            text: `**Target project:** \`${projectPath}\`\n\n${prompt}`,
+          },
+        ],
+      };
     },
   );
 }
